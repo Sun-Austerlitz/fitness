@@ -254,6 +254,8 @@ class Training(models.Model):
             raise ValidationError("Тип группы должен быть указан только для групповых тренировок.")
         if self.trainer and self.room and self.room not in self.trainer.rooms.all():
             raise ValidationError("Тренер не работает в выбранном зале.")
+        if self.trainer and self.training_type == 'SW':
+            raise ValidationError("Свободная тренировка не может быть выбрана, если выбран тренер.")
 
 
 class Booking(models.Model):

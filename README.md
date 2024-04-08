@@ -1,4 +1,5 @@
 # fitness
+тут только models.py, admin.py, и 1 флаг (AUTH_USER_MODEL = 'api.User') для settings.py
 
 логин: admin
 пароль: 123456

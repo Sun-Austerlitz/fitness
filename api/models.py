@@ -213,7 +213,11 @@ class Training(models.Model):
             booking_time__hour__range=(self.start_time.hour, self.end_time.hour) # время тренировки
         ).count() # количество бронирований
 
-        if self.training_type == 'GT':  # Групповые занятия
+        work_schedule = self.trainer.work_schedule
+
+        if work_schedule.break_start <= booking_time <= work_schedule.break_end:
+            return False
+        elif self.training_type == 'GT':  # Групповые занятия
             # Проверяем, доступен ли тренер в указанное время
             if not self.trainer.is_available(self.start_time, self.end_time):
                 return False

@@ -8,6 +8,7 @@ from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 
+
 class User(AbstractUser):
     """
     Расширяем стандартную модель User добавив роль, телефон и адрес
@@ -18,7 +19,7 @@ class User(AbstractUser):
         ('AD', 'Админ'),
     )
 
-    role = models.CharField(max_length=2, choices=ROLES)
+    role = models.CharField(max_length=2, choices=ROLES, verbose_name='Роль', default='CL', help_text='Роль пользователя в системе')
     phone = models.CharField(
         max_length=20, 
         blank=True, 
@@ -27,9 +28,12 @@ class User(AbstractUser):
                 regex=r'^\+7[67]\d{9}$',
                 message="Телефонный номер должен быть в формате : '+76XXXXXXXXX' или '+77XXXXXXXXX'."
             )
-        ]
+        ],
+        verbose_name='Телефон',
+        help_text='Телефонный номер пользователя. Должен быть в формате: "+76XXXXXXXXX" или "+77XXXXXXXXX".'
+
     ) # формат телефонного номера в Казахстане 
-    address = models.CharField(max_length=100, blank=True) # адрес пользователя
+    address = models.CharField(max_length=100, blank=True, verbose_name='Адрес', help_text='Адрес пользователя') # адрес пользователя
 
 
     def __str__(self):
@@ -38,7 +42,6 @@ class User(AbstractUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-
 
 
 class Room(models.Model):
@@ -51,7 +54,7 @@ class Room(models.Model):
         ('SW', 'Бассейн'),
         ('YR', 'Йога-зал'),
     )
-    room_type = models.CharField(max_length=2, choices=ROOM_TYPES)
+    room_type = models.CharField(max_length=2, choices=ROOM_TYPES, verbose_name='Тип зала')
     name = models.CharField(max_length=100, null=True) # название зала
     capacity = models.PositiveIntegerField() # допустимое количество человек в зале
 
@@ -79,7 +82,6 @@ class WorkSchedule(models.Model):
     break_start = models.TimeField() # время начала перерыва
     break_end = models.TimeField() # время окончания перерыва
 
-
     class Meta:
         constraints = [
             CheckConstraint(check=Q(start_time__lt=F('end_time')), name='api_workschedule_start_time_lt_end_time'),
@@ -102,7 +104,6 @@ class WorkSchedule(models.Model):
     class Meta:
         verbose_name = 'Рабочий график'
         verbose_name_plural = 'Рабочие графики'
-
 
 
 class Trainer(models.Model):

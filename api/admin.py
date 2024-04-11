@@ -1,7 +1,12 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User, Room, WorkSchedule, Trainer, GroupTrainingType, Training, Booking
 
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(BaseUserAdmin):
+    fieldsets = BaseUserAdmin.fieldsets + (
+        (None, {'fields': ('role', 'phone', 'address')}),
+    )
+    list_display = ['username', 'email', 'is_staff', 'is_active', 'role', 'phone', 'address']
     search_fields = ['username', 'email']
     list_filter = ['is_staff', 'is_active', 'role']
 
